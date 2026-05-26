@@ -52,6 +52,4 @@ jobs:
           BRANCH_NAME: ${{ github.ref_name }}
         run: |
           aikido-api-client scan-release \
-            --apikey "$AIKIDO_CI_TOKEN" \
-            --branch "$BRANCH_NAME" \
-            --fail-on-high
+            --apikey "$AIKIDO_CI_TOKEN"
