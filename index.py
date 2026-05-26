@@ -10,6 +10,18 @@ def add_numbers(a: int | float, b: int | float) -> int | float:
         raise TypeError(f"Expected int or float for 'b', got {type(b).__name__}")
     return a + b
 
+def subtract_numbers(a: int | float, b: int | float) -> int | float:
+    if type(a) not in (int, float):
+        raise TypeError(
+            f"Expected int or float for 'a', got {type(a).__name__}"
+        )
+    if type(b) not in (int, float):
+        raise TypeError(
+            f"Expected int or float for 'b', got {type(b).__name__}"
+        )
+    return a - b
+
+
 def main() -> None:
     try:
         # Core logic
@@ -39,6 +51,12 @@ def main() -> None:
         sys.exit(1)
     except Exception as e:
         print(f"An error occurred: {e}", file=sys.stderr)
+    try:
+        result = subtract_numbers(5, 10)
+        print(f"The difference is: {result}")
+    except TypeError as error:
+        print(f"Error: {error}", file=sys.stderr)
+        sys.exit(1) 
 
 if __name__ == "__main__":
     main()
