@@ -14,7 +14,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -35,3 +36,22 @@ jobs:
         with:
           name: coverage-report
           path: coverage.xml
+
+      - name: Setup Node.js (required for npm)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Aikido CLI
+        run: |
+          npm install --global @aikidosec/ci-api-client
+
+      - name: Aikido Release Scan
+        env:
+          AIKIDO_CI_TOKEN: ${{ secrets.AIKIDO_CI_TOKEN }}
+          BRANCH_NAME: ${{ github.ref_name }}
+        run: |
+          aikido-api-client scan-release \
+            --apikey "$AIKIDO_CI_TOKEN" \
+            --branch "$BRANCH_NAME" \
+            --fail-on-high

@@ -3,7 +3,7 @@ import pytest
 from index import add_numbers
 
 def test_add_numbers_with_positive_integers():
-    assert add_numbers(5, 10) == 20
+    assert add_numbers(5, 10) == 15
 
 def test_add_numbers_with_negative_values():
     assert add_numbers(-3, -7) == -10
