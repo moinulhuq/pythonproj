@@ -54,4 +54,5 @@ jobs:
         run: |
           aikido-api-client scan-release \
             --apikey "$AIKIDO_CI_TOKEN" \
-            --repository_id "$AIKIDO_REPOSITORY_ID"
+            --repository-id "$AIKIDO_REPOSITORY_ID"
+
