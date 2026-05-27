@@ -38,17 +38,24 @@ jobs:
           path: coverage.xml
 
       # -------------------------------
-      # Aikido CI/CD Integration (API)
+      # Aikido CI/CD Integration (Official CLI)
       # -------------------------------
-      - name: Aikido Release Scan (API)
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Aikido CI API Client
+        run: npm install --global @aikidosec/ci-api-client
+
+      - name: Aikido Release Scan
         env:
-          AIKIDO_CI_TOKEN: ${{ secrets.AIKIDO_CI_TOKEN }}
-          AIKIDO_REPOSITORY_ID: ${{ secrets.AIKIDO_REPOSITORY_ID }}
+          AIKIDO_CLIENT_API_KEY: ${{ secrets.AIKIDO_CI_TOKEN }}
         run: |
-          curl -X POST "https://api.aikido.dev/v1/ci/scan-release" \
-            -H "Authorization: Bearer $AIKIDO_CI_TOKEN" \
-            -H "Content-Type: application/json" \
-            -d "{
-              \"repository_id\": \"$AIKIDO_REPOSITORY_ID\",
-              \"branch\": \"${{ github.ref_name }}\"
-            }"
+          aikido-api-client scan-release \
+            ${{ github.event.repository.name }} \
+            ${{ github.sha }} \
+            --apikey "$AIKIDO_CLIENT_API_KEY" \
+            --fail-on-sast-scan \
+            --fail-on-iac-scan \
+            --fail-on-secrets-scan
