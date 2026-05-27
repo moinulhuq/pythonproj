@@ -37,22 +37,17 @@ jobs:
           name: coverage-report
           path: coverage.xml
 
-      - name: Setup Node.js (required for npm)
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
       - name: Install Aikido CLI
         run: |
-          npm install --global @aikidosec/ci-api-client
+          curl -sSL https://cli.aikido.dev/install.sh | bash
+          echo "$HOME/.aikido/bin" >> $GITHUB_PATH
           aikido-api-client --version
 
-      - name: Aikido Local Scan
+      - name: Aikido Release Scan
         env:
           AIKIDO_CI_TOKEN: ${{ secrets.AIKIDO_CI_TOKEN }}
+          AIKIDO_REPOSITORY_ID: ${{ secrets.AIKIDO_REPOSITORY_ID }}
         run: |
-          aikido-local-scanner scan ./ \
+          aikido-api-client scan-release \
             --apikey "$AIKIDO_CI_TOKEN" \
-            --repositoryname ${{ github.event.repository.name }} \
-            --branchname ${{ github.ref_name }} \
-            --fail-on high
+            --repository-id "$AIKIDO_REPOSITORY_ID"
