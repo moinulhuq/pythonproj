@@ -37,21 +37,22 @@ jobs:
           name: coverage-report
           path: coverage.xml
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install Aikido CI CLI
+      # -------------------------------
+      # Aikido CI/CD Integration
+      # -------------------------------
+      - name: Download Aikido CLI (GitHub Releases)
         run: |
-          npm install --global @aikidosec/ci-api-client
-          aikido-ci --version
+          curl -L -o aikido-cli.tar.gz https://github.com/AikidoSec/cli/releases/latest/download/aikido-cli-linux-x64.tar.gz
+          tar -xzf aikido-cli.tar.gz
+          chmod +x aikido-api-client
+          sudo mv aikido-api-client /usr/local/bin/
+          aikido-api-client --version
 
       - name: Aikido Release Scan
         env:
           AIKIDO_CI_TOKEN: ${{ secrets.AIKIDO_CI_TOKEN }}
           AIKIDO_REPOSITORY_ID: ${{ secrets.AIKIDO_REPOSITORY_ID }}
         run: |
-          aikido-ci scan-release \
+          aikido-api-client scan-release \
             --apikey "$AIKIDO_CI_TOKEN" \
             --repository-id "$AIKIDO_REPOSITORY_ID"
