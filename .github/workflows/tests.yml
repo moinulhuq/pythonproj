@@ -45,11 +45,13 @@ jobs:
       - name: Install Aikido CLI
         run: |
           npm install --global @aikidosec/ci-api-client
+          aikido-api-client --version
 
       - name: Aikido Release Scan
         env:
           AIKIDO_CI_TOKEN: ${{ secrets.AIKIDO_CI_TOKEN }}
-          BRANCH_NAME: ${{ github.ref_name }}
+          AIKIDO_REPOSITORY_ID: ${{ secrets.AIKIDO_REPOSITORY_ID }}
         run: |
           aikido-api-client scan-release \
-            --apikey "$AIKIDO_CI_TOKEN"
+            --apikey "$AIKIDO_CI_TOKEN" \
+            --repository_id "$AIKIDO_REPOSITORY_ID"
