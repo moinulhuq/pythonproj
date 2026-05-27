@@ -59,3 +59,4 @@ jobs:
             --fail-on-sast-scan \
             --fail-on-iac-scan \
             --fail-on-secrets-scan
+
