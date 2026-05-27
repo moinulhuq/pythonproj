@@ -38,21 +38,17 @@ jobs:
           path: coverage.xml
 
       # -------------------------------
-      # Aikido CI/CD Integration
+      # Aikido CI/CD Integration (API)
       # -------------------------------
-      - name: Download Aikido CLI (GitHub Releases)
-        run: |
-          curl -L -o aikido-cli.tar.gz https://github.com/AikidoSec/cli/releases/latest/download/aikido-cli-linux-x64.tar.gz
-          tar -xzf aikido-cli.tar.gz
-          chmod +x aikido-api-client
-          sudo mv aikido-api-client /usr/local/bin/
-          aikido-api-client --version
-
-      - name: Aikido Release Scan
+      - name: Aikido Release Scan (API)
         env:
           AIKIDO_CI_TOKEN: ${{ secrets.AIKIDO_CI_TOKEN }}
           AIKIDO_REPOSITORY_ID: ${{ secrets.AIKIDO_REPOSITORY_ID }}
         run: |
-          aikido-api-client scan-release \
-            --apikey "$AIKIDO_CI_TOKEN" \
-            --repository-id "$AIKIDO_REPOSITORY_ID"
+          curl -X POST "https://api.aikido.dev/v1/ci/scan-release" \
+            -H "Authorization: Bearer $AIKIDO_CI_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"repository_id\": \"$AIKIDO_REPOSITORY_ID\",
+              \"branch\": \"${{ github.ref_name }}\"
+            }"
