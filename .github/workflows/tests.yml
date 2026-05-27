@@ -47,13 +47,12 @@ jobs:
           npm install --global @aikidosec/ci-api-client
           aikido-api-client --version
 
-      - name: Aikido Release Scan
+      - name: Aikido Local Scan
         env:
           AIKIDO_CI_TOKEN: ${{ secrets.AIKIDO_CI_TOKEN }}
-          BRANCH_NAME: ${{ github.ref_name }}
         run: |
-          aikido-api-client scan-release \
+          aikido-local-scanner scan ./ \
             --apikey "$AIKIDO_CI_TOKEN" \
-            --branch "$BRANCH_NAME" \
-            --fail-on-high
-
+            --repositoryname ${{ github.event.repository.name }} \
+            --branchname ${{ github.ref_name }} \
+            --fail-on high
